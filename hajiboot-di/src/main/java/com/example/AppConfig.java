@@ -22,6 +22,9 @@ public class AppConfig
 
     @Bean
     Frontend frontend() {
-        return new Frontend();
+        Frontend frontend = new Frontend();
+        frontend.setCalculator(calculator());
+        frontend.setArgumentResolver(argumentResolver());
+        return frontend;
     }
 }
