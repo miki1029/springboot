@@ -1,10 +1,12 @@
 package com.example.app;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by miki on 15. 10. 10..
  */
+@Component
 public class Frontend {
     @Autowired
     ArgumentResolver argumentResolver;

@@ -4,13 +4,14 @@ import com.example.app.Frontend;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * Created by miki on 15. 10. 10..
  */
 @EnableAutoConfiguration
-@Import(AppConfig.class) // @Configuration이 붙은 클래스
+//@Import(AppConfig.class) // @Configuration이 붙은 클래스
+@ComponentScan // 패키지 내부에 있는 모든 클래스를 검색(패키지 변경하려면 basePackages 속성 지정)(@Component)
 public class App {
     public static void main(String[] args) {
         /*
