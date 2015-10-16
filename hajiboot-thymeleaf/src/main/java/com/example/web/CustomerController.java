@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -33,6 +34,8 @@ public class CustomerController {
         return new CustomerForm();
     }
 
+    // 고객 목록 화면(customers/list.html)
+    // GET /customers
     @RequestMapping(method = RequestMethod.GET)
     String list(Model model) { // Model : 화면에 값을 넘겨주기 위한 용도
         List<Customer> customers = customerService.findAll();
@@ -45,16 +48,49 @@ public class CustomerController {
      * 만약 RestController라면 @RequestBody가 붙은 인자에 @Validated 애너테이션을 붙인다.
      * 이 때, BindingResult는 필요없으며 클래스가 Bean Validation 계열 애너테이션이 있어야 한다.
      */
+    // 새로운 고객 생성
+    // POST /customers/create
     @RequestMapping(value = "create", method = RequestMethod.POST)
-    String create(@Validated CustomerForm customerForm, BindingResult result, Model model) {
+    String create(@Validated CustomerForm form, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return list(model); // 오류가 있으면 다시 목록 화면을 표시함
         }
         Customer customer = new Customer();
         // CustomerForm을 Customer에 복사(필드 이름과 타입이 같을 때만 사용 가능)
         // 더 유연한 Bean 변한을 구현하려면 Dozer나 ModelMapper를 이용
-        BeanUtils.copyProperties(customerForm, customer);
+        BeanUtils.copyProperties(form, customer);
         customerService.create(customer);
         return "redirect:/customers"; // 목록 화면으로 리다이렉트 'redirect: 변경할 경로'
+    }
+
+    // 고객 정보 수정 화면(customers/edit.html)
+    // GET /customers/edit?form&id={id}
+    @RequestMapping(value = "edit", params = "form", method = RequestMethod.GET) // params : 파라미터에 params가 있을 경우
+    String editForm(@RequestParam Integer id, CustomerForm form) { // @RequestParam : 특정 요청 파라미터 매핑
+        Customer customer = customerService.findOne(id);
+        // Customer를 CustomerForm에 복사 -> @ModelAttribute이므로 화면에 표시됨
+        BeanUtils.copyProperties(customer, form);
+        return "customers/edit";
+    }
+
+    // 고객 정보 수정
+    // POST /customers/edit
+    @RequestMapping(value = "edit", method = RequestMethod.POST)
+    String edit(@RequestParam Integer id, @Validated CustomerForm form, BindingResult result) {
+        if(result.hasErrors()) {
+            return editForm(id, form);
+        }
+        Customer customer = new Customer();
+        BeanUtils.copyProperties(form, customer);
+        customer.setId(id);
+        customerService.update(customer);
+        return "redirect:/customers";
+    }
+
+    // 고객 목록 화면으로 리다이렉트
+    // GET /customers/edit?goToTop
+    @RequestMapping(value = "edit", params = "goToTop")
+    String goToTop() {
+        return "redirect:/customers";
     }
 }
