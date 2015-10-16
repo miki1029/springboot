@@ -93,4 +93,12 @@ public class CustomerController {
     String goToTop() {
         return "redirect:/customers";
     }
+
+    // 고객 정보 삭제
+    // POST /customers/delete
+    @RequestMapping(value = "delete", method = RequestMethod.POST)
+    String delete(@RequestParam Integer id) {
+        customerService.delete(id);
+        return "redirect:/customers";
+    }
 }
