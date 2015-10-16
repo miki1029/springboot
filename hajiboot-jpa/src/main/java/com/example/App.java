@@ -29,7 +29,8 @@ public class App implements CommandLineRunner {
 
         // 페이징 처리
         Pageable pageable = new PageRequest(0, 3); // (가져올 페이지 수, 한 페이지가 포함하는 데이터 수)
-        Page<Customer> page = customerRepository.findAll(pageable);
+        // Page<Customer> page = customerRepository.findAll(pageable);
+        Page<Customer> page = customerRepository.findAllOrderByName(pageable);
         System.out.println("한 페이지당 데이터 수 = " + page.getSize());
         System.out.println("현재 페이지 = " + page.getNumber()); // 페이지는 0부터 시작
         System.out.println("전체 페이지 수 = " + page.getTotalPages());
