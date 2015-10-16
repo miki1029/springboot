@@ -3,9 +3,13 @@ package com.example.api;
 import com.example.domain.Customer;
 import com.example.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -32,8 +36,13 @@ public class CustomerRestController {
     // 신규 고객 정보 작성
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED) // 없으면 : 200 OK, CREATED : 201 CREATED
-    Customer postCustomers(@RequestBody Customer customer) { // HTTP Request를 @RequestBody 객체로 받음
-        return customerService.create(customer);
+    ResponseEntity<Customer> postCustomers(@RequestBody Customer customer, // HTTP Request를 @RequestBody 객체로 받음
+                                           UriComponentsBuilder uriBuilder) { // 컨텍스트 상대 경로 URI를 쉽게 만들어 줌
+        Customer created = customerService.create(customer);
+        URI location = uriBuilder.path("api/customers/{id}").buildAndExpand(created.getId()).toUri();
+        HttpHeaders headers = new HttpHeaders(); // 응답 헤더
+        headers.setLocation(location);
+        return new ResponseEntity<>(created, headers, HttpStatus.CREATED);
     }
 
     // 고객 한 명의 정보 업데이트
