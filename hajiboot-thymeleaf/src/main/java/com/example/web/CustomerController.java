@@ -40,7 +40,11 @@ public class CustomerController {
         return "customers/list"; // classpath:templates/customers/list.html
     }
 
-    // @Validated : Bean Validation을 적용하여 그 결과가 BindingResult 인자에 저장된다.
+    /*
+     * @Validated : Bean Validation을 적용하여 그 결과가 BindingResult 인자에 저장된다.
+     * 만약 RestController라면 @RequestBody가 붙은 인자에 @Validated 애너테이션을 붙인다.
+     * 이 때, BindingResult는 필요없으며 클래스가 Bean Validation 계열 애너테이션이 있어야 한다.
+     */
     @RequestMapping(value = "create", method = RequestMethod.POST)
     String create(@Validated CustomerForm customerForm, BindingResult result, Model model) {
         if (result.hasErrors()) {
