@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -13,6 +14,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
  * Created by miki on 15. 10. 10..
  */
 @EnableAutoConfiguration
+@ComponentScan // @Configuration도 스캔 대상
 public class App implements CommandLineRunner {
     /*
      * autoconfigure를 통해 DataSource나 JdbcTemplate, NamedParameterJdbcTemplate을 자동으로 생성하여 DI container에 등록함

@@ -45,6 +45,14 @@
             <version>1.16.4</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- log4jdbc-remix는 개발이 끝났으며 후속 라이브러리는 log4jdbc-log4j2 -->
+        <dependency>
+            <groupId>org.lazyluke</groupId>
+            <artifactId>log4jdbc-remix</artifactId>
+            <version>0.2.7</version>
+        </dependency>
+
     </dependencies>
 
     <build>
