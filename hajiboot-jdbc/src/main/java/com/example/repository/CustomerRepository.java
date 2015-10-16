@@ -2,14 +2,17 @@ package com.example.repository;
 
 import com.example.domain.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 /**
@@ -22,6 +25,15 @@ import java.util.List;
 public class CustomerRepository {
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
+    SimpleJdbcInsert insert;
+
+    @PostConstruct
+    public void init() {
+        insert = new SimpleJdbcInsert(
+                (JdbcTemplate) jdbcTemplate.getJdbcOperations())    // JdbcTemplate 설정
+                .withTableName("customers")                         // INSERT SQL 자동 생성
+                .usingGeneratedKeyColumns("id");                    // auto increment 컬럼명
+    }
 
     private static final RowMapper<Customer> customerRowMapper = (resultSet, i) -> {
         Integer id = resultSet.getInt("id");
@@ -46,9 +58,11 @@ public class CustomerRepository {
     public Customer save(Customer customer) {
         SqlParameterSource param = new BeanPropertySqlParameterSource(customer); // 필드 이름과 값을 매핑한 파라미터 생성
         if(customer.getId() == null) {
-            jdbcTemplate.update(
+            Number key = insert.executeAndReturnKey(param); // 자동으로 번호가 매겨진 ID 반환
+            customer.setId(key.intValue());
+            /*jdbcTemplate.update(
                     "INSERT INTO customers(first_name, last_name) VALUES(:firstName, :lastName)",
-                    param);
+                    param);*/
         } else {
             jdbcTemplate.update(
                     "UPDATE customers SET first_name=:firstName, last_name=:lastName WHERE id=:id",
