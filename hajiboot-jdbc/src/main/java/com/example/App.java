@@ -1,14 +1,12 @@
 package com.example;
 
 import com.example.domain.Customer;
+import com.example.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
 /**
  * Created by miki on 15. 10. 10..
@@ -16,23 +14,19 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 @EnableAutoConfiguration
 @ComponentScan // @Configuration도 스캔 대상
 public class App implements CommandLineRunner {
-    /*
-     * autoconfigure를 통해 DataSource나 JdbcTemplate, NamedParameterJdbcTemplate을 자동으로 생성하여 DI container에 등록함
-     * DB 의존 관계를 설정하지 않았다면 In Memory Database가 만들어짐(여기서는 H2)
-     */
     @Autowired
-    NamedParameterJdbcTemplate jdbcTemplate;
+    CustomerRepository customerRepository;
 
     @Override
     public void run(String... strings) throws Exception {
-        String sql = "SELECT id, first_name, last_name FROM customers WHERE id = :id";
-        SqlParameterSource param = new MapSqlParameterSource().addValue("id", 1);
-        Customer result = jdbcTemplate.queryForObject(sql, param, (resultSet, rowNum) -> {
-                return new Customer(
-                        resultSet.getInt("id"), resultSet.getString("first_name"), resultSet.getString("last_name"));
-        });
+        // 데이터 추가
+        Customer created = customerRepository.save(new Customer(
+                null, "민우", "김"));
+        System.out.println(created + " is created!");
 
-        System.out.println("result = " + result);
+        // 데이터 표시
+        // customerRepository.findAll().forEach((x) -> {System.out.println(x);});
+        customerRepository.findAll().forEach(System.out::println); // method reference
     }
 
     public static void main(String[] args) {
