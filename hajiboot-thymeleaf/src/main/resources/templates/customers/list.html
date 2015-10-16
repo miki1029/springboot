@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>고객 목록</title>
+</head>
+<body>
+
+<table class="table table-striped table-bordered table-condensed">
+    <!-- (루프 구간 안에서 사용하는 속성 이름 : ${(루프 대상 객체의 속성 이름)} -->
+    <tr th:each="customer : ${customers}">
+        <td th:text="${customer.id}">100</td>
+        <td th:text="${customer.lastName}">홍</td>
+        <td th:text="${customer.firstName}">길동</td>
+        <td>
+            <!-- @(***) 형식으로 상대 경로를 절대 경로로 치환 -->
+            <form th:action="@{/customers/edit}" method="get">
+                <input type="submit" name="form" value="편집" />
+                <input type="hidden" name="id" th:value="${customer.id}" />
+            </form>
+        </td>
+        <td>
+            <form th:action="@{/customers/delete}" method="post">
+                <input type="submit" name="form" value="삭제" />
+                <input type="hidden" name="id" th:value="${customer.id}" />
+            </form>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
