@@ -40,12 +40,12 @@ public class AppConfig {
         return new Log4jdbcProxyDataSource(this.dataSource);
     }
 
-    @Order(Ordered.HIGHEST_PRECEDENCE) // Bean 정의의 우선순위(필터 적용 순서로 값이 작은 쪽이 먼저 적용)(Integer.MIN_VALUE)
+/*    @Order(Ordered.HIGHEST_PRECEDENCE) // Bean 정의의 우선순위(필터 적용 순서로 값이 작은 쪽이 먼저 적용)(Integer.MIN_VALUE)
     @Bean
     CharacterEncodingFilter characterEncodingFilter() {
         CharacterEncodingFilter filter = new CharacterEncodingFilter();
         filter.setEncoding("UTF-8");
         filter.setForceEncoding(true);
         return filter;
-    }
+    }*/
 }
